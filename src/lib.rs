@@ -1,5 +1,5 @@
 use bevy::{
-    asset::{Asset, Assets, AssetApp, AssetEvent, AssetLoader, AsyncReadExt, AssetServer, LoadContext, io::Reader, Handle},
+    asset::{Asset, Assets, AssetApp, AssetEvent, AssetLoader, AssetServer, LoadContext, io::Reader, Handle},
     app::{PreStartup, Update, App, Plugin},
     ecs::{
         system::{Commands, Resource},
