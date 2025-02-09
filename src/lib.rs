@@ -17,7 +17,7 @@ use thiserror::Error;
 
 #[derive(Resource)]
 // This struct hold the handle to the asset so it doesn't disappear
-struct ConfigFileHandle<A> 
+struct ConfigFileHandle<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -27,7 +27,7 @@ where
 
 
 #[derive(Resource)]
-struct ConfigFileSettings<A> 
+struct ConfigFileSettings<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -39,7 +39,7 @@ where
 // The plugin that is instansiated in the .add_plugins()
 // Apparently (which is maybe obvious), you can implement fields in your plugins,
 // which means that when you call ::new() you can enter data such as the path
-pub struct EasyConfigPlugin<A> 
+pub struct EasyConfigPlugin<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -48,7 +48,7 @@ where
 }
 
 
-impl<A> EasyConfigPlugin<A> 
+impl<A> EasyConfigPlugin<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -64,7 +64,7 @@ where
 // Since you call with ::new() the &self argument in the build function
 // can be used to extract the path using self.path
 // self.path is passed into ConfigFileHolder and instansiated as a resource
-// Which can be used from anywhere to get the path 
+// Which can be used from anywhere to get the path
 impl<A> Plugin for EasyConfigPlugin<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone,
@@ -84,7 +84,7 @@ where
                 path: self.path.clone(),
                 _marker: PhantomData
             })
-            .add_systems(PreStartup, load_config_file::<A>);            
+            .add_systems(PreStartup, load_config_file::<A>);
     }
 }
 
@@ -95,7 +95,7 @@ fn load_config_file<A>(
     mut commands: Commands,
     config_file_settings: Res<ConfigFileSettings<A>>,
     asset_server: Res<AssetServer>,
-) 
+)
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -107,7 +107,7 @@ where
     let config_file: A = ron::from_str(&config_string).unwrap();
 
     commands.insert_resource(config_file);
-    
+
     let handle: Handle<A> = asset_server.load(path.clone());
     config_file_handle.handle = Some(handle.clone());
 }
@@ -120,7 +120,7 @@ fn update_resource<A>(
     mut ev_asset: EventReader<AssetEvent<A>>,
     config_files: Res<Assets<A>>,
     mut commands: Commands
-) 
+)
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -142,7 +142,7 @@ where
 
 // All of this below is magic, but the magic works so no reason to fix lol
 // Was I 'inspired' by bevy_common_assets... maybe :D (Thank you)
-pub struct ConfigFileAssetLoader<A> 
+pub struct ConfigFileAssetLoader<A>
 where
     for<'de> A: serde::Deserialize<'de> + Asset + Resource + Clone
 {
@@ -171,11 +171,11 @@ where
     type Settings = ();
     type Error = ConfigFileLoaderError;
 
-    async fn load<'a>(
-        &'a self,
-        reader: &'a mut Reader<'_>,
-        _settings: &'a (),
-        _load_context: &'a mut LoadContext<'_>,
+    async fn load(
+        &self,
+        reader: &mut dyn Reader,
+        _settings: &(),
+        _load_context: &mut LoadContext<'_>,
     ) -> Result<Self::Asset, Self::Error> {
         let mut bytes = Vec::new();
         reader.read_to_end(&mut bytes).await?;
